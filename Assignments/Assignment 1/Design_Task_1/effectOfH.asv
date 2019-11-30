@@ -1,0 +1,35 @@
+clear all; close all; clc;
+%% Effect of changing h on discrete time poles
+syms h
+%h_array = [0.01,0.02,0.05,0.1,0.5,1,2,10,100];
+%n = size(h_array);
+pole_arr1 = [];
+pole_arr2 = [];
+for h = 0.01:0.01:10
+    Ac = [0 1; -6 -5];
+    Bc = [0; 1];
+    Cc = [1 0];
+    Dc = 0;
+    cont_sys = ss(Ac,Bc,Cc,Dc);
+    disc_sys = c2d(cont_sys,h);
+    A = disc_sys.A;
+    
+    pole_d = eig(A);
+    pole_c = eig(Ac);
+    
+    pole_arr1 = [pole_arr1;pole_d(1)];
+    pole_arr2 = [pole_arr2;pole_d(2)];
+    
+end
+figure(1)
+h = 0.01:0.01:10;
+plot(h',pole_arr1,h',pole_arr2)
+hold on
+xlabel('Sampling interval (h)');
+ylabel('Pole locations');
+legend('Pole1','Pole2');
+title('Plot of effect of changing Sampling Interval on DTS poles')
+hold off
+
+%% Verify the relation between CTS and DTS poles
+plot(h',pole_arr1,h',pole_arrC1);
